@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Restaurace v okolí – Brno</title>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100dvh;
+      overflow: hidden;
+      background: #f0f2f5;
+    }
+
+    /* ── Top bar ─────────────────────────────────────────── */
+    #topbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      background: #1558b0;
+      color: #fff;
+      box-shadow: 0 2px 6px rgba(0,0,0,.25);
+      flex-shrink: 0;
+      flex-wrap: wrap;
+    }
+
+    #topbar-title { flex-shrink: 0; }
+    #topbar-title h1 { font-size: 1rem; font-weight: 700; line-height: 1.2; }
+    #topbar-title .subtitle { font-size: 0.72rem; opacity: .75; }
+
+    #search-row {
+      display: flex;
+      gap: 6px;
+      flex: 1;
+      min-width: 200px;
+    }
+
+    #search-input {
+      flex: 1;
+      padding: 7px 12px;
+      border: none;
+      border-radius: 20px;
+      font-size: 0.88rem;
+      outline: none;
+      min-width: 0;
+    }
+
+    .topbtn {
+      padding: 7px 13px;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.82rem;
+      font-weight: 500;
+      white-space: nowrap;
+      background: rgba(255,255,255,.2);
+      color: #fff;
+      transition: background .15s;
+    }
+    .topbtn:hover  { background: rgba(255,255,255,.32); }
+    .topbtn:active { background: rgba(255,255,255,.4); }
+
+    #radius-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    #radius-wrap label { font-size: 0.8rem; opacity: .8; }
+    #radius-select {
+      padding: 5px 8px;
+      border: none;
+      border-radius: 12px;
+      font-size: 0.82rem;
+      cursor: pointer;
+      background: rgba(255,255,255,.9);
+      color: #333;
+    }
+
+    /* ── Main layout ─────────────────────────────────────── */
+    #main { display: flex; flex: 1; overflow: hidden; }
+
+    /* ── Sidebar ─────────────────────────────────────────── */
+    #sidebar {
+      width: 300px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+      box-shadow: 2px 0 8px rgba(0,0,0,.08);
+      overflow: hidden;
+      z-index: 100;
+    }
+
+    #sidebar-header {
+      padding: 9px 14px;
+      font-size: 0.76rem;
+      color: #666;
+      background: #f7f8fa;
+      border-bottom: 1px solid #eee;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    #spinner {
+      width: 13px; height: 13px;
+      border: 2px solid #ccc;
+      border-top-color: #1558b0;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      flex-shrink: 0;
+      display: none;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    #restaurant-list { overflow-y: auto; flex: 1; }
+
+    /* ── Restaurant card ─────────────────────────────────── */
+    .rcard {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px 14px;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+      transition: background .12s;
+      border-left: 3px solid transparent;
+    }
+    .rcard:hover  { background: #f3f7ff; }
+    .rcard.active { background: #ebf1ff; border-left-color: #1558b0; }
+
+    .rcard-info { flex: 1; min-width: 0; }
+
+    .rcard-name {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .rcard-address {
+      font-size: 0.74rem;
+      color: #888;
+      margin-bottom: 5px;
+      line-height: 1.3;
+    }
+    .rcard-dist {
+      font-size: 0.7rem;
+      color: #aaa;
+    }
+
+    .rcard-web {
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .web-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 9px;
+      background: #1558b0;
+      color: #fff;
+      font-size: 0.72rem;
+      font-weight: 500;
+      border-radius: 12px;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background .13s;
+    }
+    .web-link:hover { background: #0f44a0; }
+    .no-web {
+      font-size: 0.7rem;
+      color: #ccc;
+      padding-top: 4px;
+    }
+
+    /* ── Empty / error states ────────────────────────────── */
+    .state-msg {
+      padding: 24px 16px;
+      color: #aaa;
+      font-size: 0.83rem;
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    /* ── Map ─────────────────────────────────────────────── */
+    #map { flex: 1; }
+
+    /* ── Popup ───────────────────────────────────────────── */
+    .pu { font-size: 0.84rem; line-height: 1.45; max-width: 240px; }
+    .pu-name { font-weight: 700; font-size: 0.95rem; margin-bottom: 3px; }
+    .pu-addr { color: #888; font-size: 0.73rem; margin-bottom: 10px; }
+    .pu-link {
+      display: inline-block;
+      padding: 5px 11px;
+      background: #1558b0;
+      color: #fff;
+      font-size: 0.76rem;
+      font-weight: 500;
+      border-radius: 12px;
+      text-decoration: none;
+    }
+    .pu-link:hover { background: #0f44a0; }
+    .pu-no-web { color: #bbb; font-size: 0.76rem; font-style: italic; }
+
+    /* ── Location dot ────────────────────────────────────── */
+    .loc-dot {
+      width: 14px; height: 14px;
+      background: #1558b0;
+      border: 3px solid #fff;
+      border-radius: 50%;
+      box-shadow: 0 1px 5px rgba(0,0,0,.5);
+    }
+
+    /* ── Responsive ──────────────────────────────────────── */
+    @media (max-width: 660px) {
+      #main { flex-direction: column-reverse; }
+      #sidebar { width: 100%; height: 44dvh; box-shadow: 0 -2px 8px rgba(0,0,0,.1); }
+      #radius-wrap label { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="topbar">
+  <div id="topbar-title">
+    <h1>Restaurace v okolí</h1>
+    <div class="subtitle" id="center-label">Jakubské náměstí, Brno</div>
+  </div>
+
+  <div id="search-row">
+    <input id="search-input" type="text" placeholder="Hledat adresu…" autocomplete="off">
+    <button class="topbtn" id="search-btn">Hledat</button>
+    <button class="topbtn" id="locate-btn" title="Použít moji polohu">📍</button>
+  </div>
+
+  <div id="radius-wrap">
+    <label for="radius-select">Radius:</label>
+    <select id="radius-select">
+      <option value="402">0.25 mi</option>
+      <option value="804" selected>0.5 mi</option>
+      <option value="1609">1 mi</option>
+      <option value="3219">2 mi</option>
+    </select>
+  </div>
+</div>
+
+<div id="main">
+  <div id="sidebar">
+    <div id="sidebar-header">
+      <div id="spinner"></div>
+      <span id="sidebar-text">Načítání…</span>
+    </div>
+    <div id="restaurant-list"></div>
+  </div>
+  <div id="map"></div>
+</div>
+
+<script>
+// ── Constants ────────────────────────────────────────────────
+// Jakubské náměstí, Brno
+const DEFAULT_LAT = 49.1958;
+const DEFAULT_LNG = 16.6101;
+const OVERPASS_MIRRORS = [
+  "https://overpass-api.de/api/interpreter",
+  "https://overpass.kumi.systems/api/interpreter",
+];
+
+// ── Map ──────────────────────────────────────────────────────
+const map = L.map("map").setView([DEFAULT_LAT, DEFAULT_LNG], 16);
+
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+  maxZoom: 19,
+}).addTo(map);
+
+// ── State ────────────────────────────────────────────────────
+let centerLat     = DEFAULT_LAT;
+let centerLng     = DEFAULT_LNG;
+let radiusMeters  = 804;
+let markers       = [];
+let centerMarker  = null;
+let radiusCircle  = null;
+let fetchTimer    = null;
+
+// ── Icons ────────────────────────────────────────────────────
+function makePin(fill) {
+  return L.divIcon({
+    className: "",
+    html: `<svg xmlns="http://www.w3.org/2000/svg" width="26" height="36" viewBox="0 0 26 36">
+      <path d="M13 0C5.82 0 0 5.82 0 13c0 8.94 13 23 13 23S26 21.94 26 13C26 5.82 20.18 0 13 0z"
+            fill="${fill}" stroke="#fff" stroke-width="2"/>
+      <circle cx="13" cy="13" r="4.5" fill="#fff"/>
+    </svg>`,
+    iconSize: [26, 36],
+    iconAnchor: [13, 36],
+    popupAnchor: [0, -38],
+  });
+}
+const pinBlue = makePin("#1558b0");
+const pinRed  = makePin("#c62828");
+
+const locIcon = L.divIcon({
+  className: "",
+  html: '<div class="loc-dot"></div>',
+  iconSize: [14, 14],
+  iconAnchor: [7, 7],
+});
+
+// ── Haversine distance (metres) ──────────────────────────────
+function distM(lat1, lon1, lat2, lon2) {
+  const R = 6371000, r = Math.PI / 180;
+  const dLat = (lat2 - lat1) * r, dLon = (lon2 - lon1) * r;
+  const a = Math.sin(dLat/2)**2 +
+            Math.cos(lat1*r) * Math.cos(lat2*r) * Math.sin(dLon/2)**2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+
+function mToMiles(m) { return (m / 1609.344).toFixed(2); }
+
+// ── Overpass query ───────────────────────────────────────────
+function buildQuery(lat, lng, radius) {
+  return `[out:json][timeout:25];
+(
+  node["amenity"="restaurant"](around:${radius},${lat},${lng});
+  way["amenity"="restaurant"](around:${radius},${lat},${lng});
+  relation["amenity"="restaurant"](around:${radius},${lat},${lng});
+);
+out center tags;`;
+}
+
+function parseRestaurants(elements) {
+  return elements.map(el => {
+    const t = el.tags || {};
+    const lat = el.lat ?? el.center?.lat;
+    const lng = el.lon ?? el.center?.lon;
+    if (!lat || !lng) return null;
+
+    const street  = t["addr:street"] || "";
+    const num     = t["addr:housenumber"] || "";
+    const city    = t["addr:city"] || "";
+    const address = [street && num ? `${street} ${num}` : street || num, city]
+      .filter(Boolean).join(", ");
+
+    const website = t.website || t["contact:website"] || t.url || "";
+
+    return { lat, lng, name: t.name || "(bez názvu)", address, website };
+  }).filter(Boolean);
+}
+
+// ── Build popup ──────────────────────────────────────────────
+function buildPopup(r) {
+  const webPart = r.website
+    ? `<a class="pu-link" href="${esc(r.website)}" target="_blank" rel="noopener">Otevřít web →</a>`
+    : `<span class="pu-no-web">Web není k dispozici</span>`;
+  return `<div class="pu">
+    <div class="pu-name">${esc(r.name)}</div>
+    <div class="pu-addr">${esc(r.address) || "adresa neznámá"}</div>
+    ${webPart}
+  </div>`;
+}
+
+// ── Build card ───────────────────────────────────────────────
+function buildCard(r, idx) {
+  const d = distM(centerLat, centerLng, r.lat, r.lng);
+  const distLabel = `${mToMiles(d)} mi / ${Math.round(d)} m`;
+
+  const webPart = r.website
+    ? `<a class="web-link" href="${esc(r.website)}" target="_blank" rel="noopener"
+          onclick="event.stopPropagation()">Web ↗</a>`
+    : `<span class="no-web">—</span>`;
+
+  const div = document.createElement("div");
+  div.className = "rcard";
+  div.dataset.idx = idx;
+  div.innerHTML = `
+    <div class="rcard-info">
+      <div class="rcard-name">${esc(r.name)}</div>
+      <div class="rcard-address">${esc(r.address) || "adresa neznámá"}</div>
+      <div class="rcard-dist">${distLabel}</div>
+    </div>
+    <div class="rcard-web">${webPart}</div>
+  `;
+  div.addEventListener("click", () => focusRestaurant(idx));
+  return div;
+}
+
+// ── Focus restaurant ─────────────────────────────────────────
+function focusRestaurant(idx) {
+  document.querySelectorAll(".rcard").forEach(c => c.classList.remove("active"));
+  const card = document.querySelector(`.rcard[data-idx="${idx}"]`);
+  card?.classList.add("active");
+  card?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+
+  if (markers[idx]) {
+    markers[idx].setIcon(pinRed);
+    setTimeout(() => markers[idx]?.setIcon(pinBlue), 1600);
+    map.setView(markers[idx].getLatLng(), 17, { animate: true });
+    markers[idx].openPopup();
+  }
+}
+
+// ── Render results ───────────────────────────────────────────
+function renderRestaurants(restaurants) {
+  const list = document.getElementById("restaurant-list");
+  list.innerHTML = "";
+  markers.forEach(m => map.removeLayer(m));
+  markers = [];
+
+  // Sort by distance from center
+  restaurants.sort((a, b) =>
+    distM(centerLat, centerLng, a.lat, a.lng) -
+    distM(centerLat, centerLng, b.lat, b.lng)
+  );
+
+  setHeader(`${restaurants.length} restaurací v okruhu`);
+
+  if (restaurants.length === 0) {
+    list.innerHTML = `<div class="state-msg">
+      V zadaném okruhu nebyly nalezeny žádné restaurace.<br>Zkuste zvětšit radius.
+    </div>`;
+    return;
+  }
+
+  restaurants.forEach((r, i) => {
+    const marker = L.marker([r.lat, r.lng], { icon: pinBlue })
+      .addTo(map)
+      .bindPopup(buildPopup(r), { maxWidth: 260 });
+
+    marker.on("popupopen", () => {
+      document.querySelectorAll(".rcard").forEach(c => c.classList.remove("active"));
+      const card = document.querySelector(`.rcard[data-idx="${i}"]`);
+      card?.classList.add("active");
+      card?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    });
+
+    markers.push(marker);
+    list.appendChild(buildCard(r, i));
+  });
+}
+
+// ── Fetch from Overpass ──────────────────────────────────────
+function setLoading(on) {
+  document.getElementById("spinner").style.display = on ? "block" : "none";
+}
+function setHeader(text) {
+  document.getElementById("sidebar-text").textContent = text;
+}
+
+async function fetchRestaurants() {
+  setLoading(true);
+  setHeader("Hledám restaurace…");
+  document.getElementById("restaurant-list").innerHTML = "";
+  markers.forEach(m => map.removeLayer(m));
+  markers = [];
+
+  const query = buildQuery(centerLat, centerLng, radiusMeters);
+  let lastErr;
+
+  for (const mirror of OVERPASS_MIRRORS) {
+    try {
+      const res = await fetch(mirror, {
+        method: "POST",
+        body: "data=" + encodeURIComponent(query),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      renderRestaurants(parseRestaurants(data.elements));
+      setLoading(false);
+      return;
+    } catch (err) {
+      lastErr = err;
+    }
+  }
+
+  setLoading(false);
+  setHeader("⚠ Chyba při načítání dat");
+  document.getElementById("restaurant-list").innerHTML =
+    `<div class="state-msg">Nepodařilo se načíst data z OpenStreetMap.<br>
+    Zkuste to znovu za chvíli.<br><small>${esc(lastErr?.message)}</small><br><br>
+    <button onclick="fetchRestaurants()" style="padding:6px 14px;border:none;border-radius:12px;
+      background:#1558b0;color:#fff;cursor:pointer;font-size:0.82rem">Zkusit znovu</button>
+    </div>`;
+}
+
+// ── Update center marker + radius circle ─────────────────────
+function updateMapOverlay() {
+  if (centerMarker) map.removeLayer(centerMarker);
+  if (radiusCircle) map.removeLayer(radiusCircle);
+
+  centerMarker = L.marker([centerLat, centerLng], { icon: locIcon })
+    .addTo(map)
+    .bindPopup(document.getElementById("center-label").textContent);
+
+  radiusCircle = L.circle([centerLat, centerLng], {
+    radius: radiusMeters,
+    color: "#1558b0",
+    weight: 1.5,
+    fillOpacity: 0.05,
+  }).addTo(map);
+
+  map.fitBounds(radiusCircle.getBounds(), { padding: [24, 24], animate: true, maxZoom: 16 });
+}
+
+// ── Set new center and refresh ───────────────────────────────
+function setCenter(lat, lng, label) {
+  centerLat = lat;
+  centerLng = lng;
+  document.getElementById("center-label").textContent = label || `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+  updateMapOverlay();
+
+  clearTimeout(fetchTimer);
+  fetchRestaurants();
+}
+
+// ── Geolocation ──────────────────────────────────────────────
+document.getElementById("locate-btn").addEventListener("click", () => {
+  if (!navigator.geolocation) {
+    alert("Geolokace není ve vašem prohlížeči dostupná.");
+    return;
+  }
+  navigator.geolocation.getCurrentPosition(
+    pos => setCenter(pos.coords.latitude, pos.coords.longitude, "Moje poloha"),
+    err => alert("Nepodařilo se získat polohu: " + err.message),
+    { enableHighAccuracy: true, timeout: 8000 }
+  );
+});
+
+// ── Address search ───────────────────────────────────────────
+async function searchAddress() {
+  const raw = document.getElementById("search-input").value.trim();
+  if (!raw) return;
+  const query = /brno/i.test(raw) ? raw : raw + ", Brno";
+  try {
+    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1`;
+    const res  = await fetch(url, { headers: { "Accept-Language": "cs" } });
+    const data = await res.json();
+    if (data.length) {
+      setCenter(parseFloat(data[0].lat), parseFloat(data[0].lon), data[0].display_name.split(",")[0]);
+    } else {
+      alert(`Adresa nenalezena: "${raw}"`);
+    }
+  } catch {
+    alert("Chyba při hledání adresy.");
+  }
+}
+
+document.getElementById("search-btn").addEventListener("click", searchAddress);
+document.getElementById("search-input").addEventListener("keydown", e => {
+  if (e.key === "Enter") searchAddress();
+});
+
+// ── Radius change ────────────────────────────────────────────
+document.getElementById("radius-select").addEventListener("change", e => {
+  radiusMeters = parseInt(e.target.value);
+  updateMapOverlay();
+  clearTimeout(fetchTimer);
+  fetchTimer = setTimeout(fetchRestaurants, 300);
+});
+
+// ── XSS helper ───────────────────────────────────────────────
+function esc(str) {
+  if (!str) return "";
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+// ── Initial load ─────────────────────────────────────────────
+updateMapOverlay();
+fetchRestaurants();
+</script>
+</body>
+</html>
