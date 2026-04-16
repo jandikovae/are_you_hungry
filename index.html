@@ -39,40 +39,23 @@
     #search-row { display: flex; gap: 6px; flex: 1; min-width: 200px; }
 
     #search-input {
-      flex: 1;
-      padding: 7px 12px;
-      border: none;
-      border-radius: 20px;
-      font-size: 0.88rem;
-      outline: none;
-      min-width: 0;
+      flex: 1; padding: 7px 12px; border: none; border-radius: 20px;
+      font-size: 0.88rem; outline: none; min-width: 0;
     }
 
     .topbtn {
-      padding: 7px 13px;
-      border: none;
-      border-radius: 20px;
-      cursor: pointer;
-      font-size: 0.82rem;
-      font-weight: 500;
-      white-space: nowrap;
-      background: rgba(255,255,255,.2);
-      color: #fff;
-      transition: background .15s;
+      padding: 7px 13px; border: none; border-radius: 20px; cursor: pointer;
+      font-size: 0.82rem; font-weight: 500; white-space: nowrap;
+      background: rgba(255,255,255,.2); color: #fff; transition: background .15s;
     }
     .topbtn:hover  { background: rgba(255,255,255,.32); }
-    .topbtn:active { background: rgba(255,255,255,.4); }
+    .topbtn:active { background: rgba(255,255,255,.4);  }
 
     #radius-wrap { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
     #radius-wrap label { font-size: 0.8rem; opacity: .8; }
     #radius-select {
-      padding: 5px 8px;
-      border: none;
-      border-radius: 12px;
-      font-size: 0.82rem;
-      cursor: pointer;
-      background: rgba(255,255,255,.9);
-      color: #333;
+      padding: 5px 8px; border: none; border-radius: 12px;
+      font-size: 0.82rem; cursor: pointer; background: rgba(255,255,255,.9); color: #333;
     }
 
     /* ── Main layout ─────────────────────────────────────── */
@@ -80,109 +63,57 @@
 
     /* ── Sidebar ─────────────────────────────────────────── */
     #sidebar {
-      width: 300px;
-      flex-shrink: 0;
-      display: flex;
-      flex-direction: column;
-      background: #fff;
-      box-shadow: 2px 0 8px rgba(0,0,0,.08);
-      overflow: hidden;
-      z-index: 100;
+      width: 300px; flex-shrink: 0; display: flex; flex-direction: column;
+      background: #fff; box-shadow: 2px 0 8px rgba(0,0,0,.08); overflow: hidden; z-index: 100;
     }
 
     #sidebar-header {
-      padding: 9px 14px;
-      font-size: 0.76rem;
-      color: #666;
-      background: #f7f8fa;
-      border-bottom: 1px solid #eee;
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      padding: 9px 14px; font-size: 0.76rem; color: #666;
+      background: #f7f8fa; border-bottom: 1px solid #eee;
+      flex-shrink: 0; display: flex; align-items: center; gap: 6px;
     }
 
     #spinner {
-      width: 12px; height: 12px;
-      border: 2px solid #ccc;
-      border-top-color: #1558b0;
-      border-radius: 50%;
-      animation: spin .7s linear infinite;
-      flex-shrink: 0;
-      display: none;
+      width: 12px; height: 12px; border: 2px solid #ccc; border-top-color: #1558b0;
+      border-radius: 50%; animation: spin .7s linear infinite; flex-shrink: 0; display: none;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
     /* Progress bar */
     #progress-wrap {
-      padding: 0 14px 7px;
-      background: #f7f8fa;
-      border-bottom: 1px solid #eee;
-      flex-shrink: 0;
-      display: none;
+      padding: 0 14px 7px; background: #f7f8fa;
+      border-bottom: 1px solid #eee; flex-shrink: 0; display: none;
     }
-    #progress-track {
-      height: 4px;
-      background: #e0e0e0;
-      border-radius: 2px;
-      overflow: hidden;
-    }
-    #progress-fill {
-      height: 100%;
-      background: #1558b0;
-      width: 0%;
-      transition: width .25s;
-    }
-    #progress-text {
-      font-size: 0.68rem;
-      color: #aaa;
-      margin-top: 3px;
-    }
+    #progress-track { height: 4px; background: #e0e0e0; border-radius: 2px; overflow: hidden; }
+    #progress-fill  { height: 100%; background: #1558b0; width: 0%; transition: width .2s; }
+    #progress-text  { font-size: 0.68rem; color: #aaa; margin-top: 3px; }
 
     #restaurant-list { overflow-y: auto; flex: 1; }
 
     /* ── Restaurant card ─────────────────────────────────── */
     .rcard {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 10px;
-      padding: 11px 14px;
-      border-bottom: 1px solid #eee;
-      cursor: pointer;
-      transition: background .12s;
-      border-left: 3px solid transparent;
+      display: flex; align-items: flex-start; justify-content: space-between;
+      gap: 10px; padding: 11px 14px; border-bottom: 1px solid #eee;
+      cursor: pointer; transition: background .12s; border-left: 3px solid transparent;
+      animation: fadeIn .25s ease;
     }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
     .rcard:hover  { background: #f3f7ff; }
     .rcard.active { background: #ebf1ff; border-left-color: #1558b0; }
 
     .rcard-info { flex: 1; min-width: 0; }
     .rcard-name {
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: #1a1a1a;
-      margin-bottom: 2px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      font-size: 0.9rem; font-weight: 600; color: #1a1a1a; margin-bottom: 2px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
     .rcard-address { font-size: 0.73rem; color: #888; margin-bottom: 4px; line-height: 1.3; }
     .rcard-dist    { font-size: 0.69rem; color: #bbb; }
 
     .rcard-web { flex-shrink: 0; margin-top: 2px; }
     .menu-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 3px;
-      padding: 4px 9px;
-      background: #1558b0;
-      color: #fff;
-      font-size: 0.71rem;
-      font-weight: 500;
-      border-radius: 12px;
-      text-decoration: none;
-      white-space: nowrap;
-      transition: background .13s;
+      display: inline-flex; align-items: center; gap: 3px; padding: 4px 9px;
+      background: #1558b0; color: #fff; font-size: 0.71rem; font-weight: 500;
+      border-radius: 12px; text-decoration: none; white-space: nowrap; transition: background .13s;
     }
     .menu-link:hover { background: #0f44a0; }
     .menu-link.main-site { background: #6a8fd8; }
@@ -190,24 +121,14 @@
 
     /* ── Empty / error ───────────────────────────────────── */
     .state-msg {
-      padding: 24px 16px;
-      color: #aaa;
-      font-size: 0.83rem;
-      text-align: center;
-      line-height: 1.7;
+      padding: 24px 16px; color: #aaa; font-size: 0.83rem;
+      text-align: center; line-height: 1.7;
     }
     .retry-btn {
-      display: inline-block;
-      margin-top: 10px;
-      padding: 6px 16px;
-      background: #1558b0;
-      color: #fff;
-      border: none;
-      border-radius: 14px;
-      font-size: 0.82rem;
-      cursor: pointer;
+      display: inline-block; margin-top: 10px; padding: 6px 16px;
+      background: #1558b0; color: #fff; border: none; border-radius: 14px;
+      font-size: 0.82rem; cursor: pointer;
     }
-    .retry-btn:hover { background: #0f44a0; }
 
     /* ── Map ─────────────────────────────────────────────── */
     #map { flex: 1; }
@@ -217,24 +138,15 @@
     .pu-name { font-weight: 700; font-size: 0.95rem; margin-bottom: 3px; }
     .pu-addr { color: #888; font-size: 0.73rem; margin-bottom: 10px; }
     .pu-link {
-      display: inline-block;
-      padding: 5px 12px;
-      background: #1558b0;
-      color: #fff;
-      font-size: 0.76rem;
-      font-weight: 500;
-      border-radius: 12px;
-      text-decoration: none;
+      display: inline-block; padding: 5px 12px; background: #1558b0;
+      color: #fff; font-size: 0.76rem; font-weight: 500; border-radius: 12px; text-decoration: none;
     }
     .pu-link:hover { background: #0f44a0; }
 
     /* ── Location dot ────────────────────────────────────── */
     .loc-dot {
-      width: 14px; height: 14px;
-      background: #1558b0;
-      border: 3px solid #fff;
-      border-radius: 50%;
-      box-shadow: 0 1px 5px rgba(0,0,0,.5);
+      width: 14px; height: 14px; background: #1558b0; border: 3px solid #fff;
+      border-radius: 50%; box-shadow: 0 1px 5px rgba(0,0,0,.5);
     }
 
     /* ── Responsive ──────────────────────────────────────── */
@@ -260,10 +172,11 @@
   <div id="radius-wrap">
     <label for="radius-select">Radius:</label>
     <select id="radius-select">
-      <option value="402">0.25 mi</option>
-      <option value="804" selected>0.5 mi</option>
-      <option value="1609">1 mi</option>
-      <option value="3219">2 mi</option>
+      <option value="100">100 m</option>
+      <option value="250">250 m</option>
+      <option value="500" selected>500 m</option>
+      <option value="1000">1 km</option>
+      <option value="2000">2 km</option>
     </select>
   </div>
 </div>
@@ -285,23 +198,22 @@
 
 <script>
 // ── Config ───────────────────────────────────────────────────
-const DEFAULT_LAT = 49.1958;
-const DEFAULT_LNG = 16.6101;
-const CONCURRENCY  = 8;
-const CACHE_TTL_MS = 4 * 3600 * 1000; // 4 hours
+const DEFAULT_LAT   = 49.1958;
+const DEFAULT_LNG   = 16.6101;
+const CONCURRENCY   = 12;
+const SITE_TIMEOUT  = 5000;   // ms per website check
+const CACHE_TTL_MS  = 4 * 3600 * 1000;
 
 const OVERPASS_MIRRORS = [
   "https://overpass-api.de/api/interpreter",
   "https://overpass.kumi.systems/api/interpreter",
 ];
 
-// CORS proxies — tried in order, first that succeeds wins
 const PROXY_FNS = [
   u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
   u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
 ];
 
-// Keywords that indicate a daily/weekly lunch menu exists on the page
 const MENU_KEYWORDS = [
   'denní menu', 'denni menu',
   'týdenní menu', 'tydenni menu',
@@ -310,16 +222,13 @@ const MENU_KEYWORDS = [
   'lunch menu',
 ];
 
-// Substrings in href that strongly suggest a direct menu page
 const MENU_HREF_HINTS = [
-  'denni-menu', 'denni_menu',
-  'poledni-menu', 'poledni_menu',
-  'tydenni-menu', 'tydenni_menu',
-  'obedove-menu', 'lunch-menu',
+  'denni-menu', 'denni_menu', 'poledni-menu', 'poledni_menu',
+  'tydenni-menu', 'tydenni_menu', 'obedove-menu', 'lunch-menu',
   'menu/poledni', 'poledni/menu',
 ];
 
-// ── Map setup ────────────────────────────────────────────────
+// ── Map ──────────────────────────────────────────────────────
 const map = L.map("map").setView([DEFAULT_LAT, DEFAULT_LNG], 16);
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
   attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
@@ -329,11 +238,16 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 // ── State ────────────────────────────────────────────────────
 let centerLat    = DEFAULT_LAT;
 let centerLng    = DEFAULT_LNG;
-let radiusMeters = 804;
-let markers      = [];
+let radiusMeters = 500;
+let fetchTimer   = null;
+
+// Progressive-render state (reset on each new search)
+let confirmed   = [];          // sorted by distance
+let markerById  = {};          // id → L.Marker
 let centerMarker = null;
 let radiusCircle = null;
-let fetchTimer   = null;
+let totalChecked = 0;
+let totalToCheck = 0;
 
 // ── Icons ────────────────────────────────────────────────────
 function makePin(fill) {
@@ -355,19 +269,18 @@ const locIcon = L.divIcon({
   iconSize: [14, 14], iconAnchor: [7, 7],
 });
 
-// ── Distance (metres) ─────────────────────────────────────────
+// ── Distance ─────────────────────────────────────────────────
 function distM(lat1, lon1, lat2, lon2) {
   const R = 6371000, r = Math.PI / 180;
   const dLat = (lat2 - lat1) * r, dLon = (lon2 - lon1) * r;
-  const a = Math.sin(dLat/2)**2 +
-            Math.cos(lat1*r) * Math.cos(lat2*r) * Math.sin(dLon/2)**2;
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*r)*Math.cos(lat2*r)*Math.sin(dLon/2)**2;
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 }
 function fmtDist(m) {
-  return `${(m / 1609.344).toFixed(2)} mi / ${Math.round(m)} m`;
+  return m < 1000 ? `${Math.round(m)} m` : `${(m/1000).toFixed(1)} km`;
 }
 
-// ── Overpass ──────────────────────────────────────────────────
+// ── Overpass ─────────────────────────────────────────────────
 function buildQuery(lat, lng, radius) {
   return `[out:json][timeout:25];
 (
@@ -384,35 +297,31 @@ function parseRestaurants(elements) {
     const lat = el.lat ?? el.center?.lat;
     const lng = el.lon ?? el.center?.lon;
     if (!lat || !lng) return null;
-
     const street  = t["addr:street"] || "";
     const num     = t["addr:housenumber"] || "";
     const city    = t["addr:city"] || "";
     const address = [street && num ? `${street} ${num}` : (street || num), city]
       .filter(Boolean).join(", ");
-
     const website = t.website || t["contact:website"] || t.url || "";
-    return { lat, lng, name: t.name || "(bez názvu)", address, website };
+    const id      = String(el.id || `${lat}_${lng}`);
+    return { id, lat, lng, name: t.name || "(bez názvu)", address, website };
   }).filter(Boolean);
 }
 
 // ── Fetch helpers ─────────────────────────────────────────────
-async function fetchWithTimeout(url, options = {}, ms = 10000) {
+async function fetchWithTimeout(url, options = {}, ms = 12000) {
   const ctrl = new AbortController();
   const id   = setTimeout(() => ctrl.abort(), ms);
-  try {
-    return await fetch(url, { ...options, signal: ctrl.signal });
-  } finally {
-    clearTimeout(id);
-  }
+  try   { return await fetch(url, { ...options, signal: ctrl.signal }); }
+  finally { clearTimeout(id); }
 }
 
 async function proxyFetch(url) {
   for (const fn of PROXY_FNS) {
     try {
-      const r = await fetchWithTimeout(fn(url), {}, 9000);
+      const r = await fetchWithTimeout(fn(url), {}, SITE_TIMEOUT);
       if (r.ok) return await r.text();
-    } catch { /* try next proxy */ }
+    } catch { /* try next */ }
   }
   return null;
 }
@@ -420,25 +329,18 @@ async function proxyFetch(url) {
 // ── Menu detection ────────────────────────────────────────────
 function extractMenuLink(html, baseUrl) {
   let doc;
-  try { doc = new DOMParser().parseFromString(html, "text/html"); }
-  catch { return null; }
-
+  try { doc = new DOMParser().parseFromString(html, "text/html"); } catch { return null; }
   let best = null, bestScore = 0;
-
   for (const a of doc.querySelectorAll("a[href]")) {
     const href = (a.getAttribute("href") || "").trim();
     const text = (a.textContent || "").toLowerCase().trim();
     if (!href || href.startsWith("#") || href.startsWith("javascript")) continue;
-
     let score = 0;
     if (MENU_HREF_HINTS.some(w => href.toLowerCase().includes(w))) score += 4;
     if (MENU_KEYWORDS.some(w => text.includes(w)))                  score += 2;
-    // A /menu path by itself is a weak signal
     if (/\/menu\/?(?:\?|$)/i.test(href))                            score += 1;
-
     if (score > bestScore) { bestScore = score; best = href; }
   }
-
   if (!best || bestScore === 0) return null;
   try { return new URL(best, baseUrl).href; } catch { return null; }
 }
@@ -446,23 +348,18 @@ function extractMenuLink(html, baseUrl) {
 async function checkWebsite(website) {
   const html = await proxyFetch(website);
   if (!html) return { hasMenu: false, menuUrl: null };
-
   const lower = html.toLowerCase();
   if (!MENU_KEYWORDS.some(k => lower.includes(k))) return { hasMenu: false, menuUrl: null };
-
-  const menuUrl = extractMenuLink(html, website);
-  return { hasMenu: true, menuUrl };
+  return { hasMenu: true, menuUrl: extractMenuLink(html, website) };
 }
 
 // ── Concurrency pool ──────────────────────────────────────────
-async function concurrentMap(items, fn, limit) {
-  const results = new Array(items.length);
+async function concurrentForEach(items, fn, limit) {
   let i = 0;
   async function worker() {
-    while (i < items.length) { const idx = i++; results[idx] = await fn(items[idx], idx); }
+    while (i < items.length) { const idx = i++; await fn(items[idx], idx); }
   }
   await Promise.all(Array.from({ length: Math.min(limit, items.length) }, worker));
-  return results;
 }
 
 // ── Cache ─────────────────────────────────────────────────────
@@ -487,12 +384,12 @@ function setLoading(on) {
 function setHeader(text) {
   document.getElementById("sidebar-text").textContent = text;
 }
-function setProgress(done, total, label) {
+function setProgress(done, total) {
   const wrap = document.getElementById("progress-wrap");
-  if (total === 0) { wrap.style.display = "none"; return; }
+  if (!total) { wrap.style.display = "none"; return; }
   wrap.style.display = "block";
   document.getElementById("progress-fill").style.width = `${Math.round(done / total * 100)}%`;
-  document.getElementById("progress-text").textContent = label;
+  document.getElementById("progress-text").textContent = `kontroluji weby: ${done} / ${total}`;
 }
 function hideProgress() {
   document.getElementById("progress-wrap").style.display = "none";
@@ -501,24 +398,22 @@ function hideProgress() {
 // ── Build popup ───────────────────────────────────────────────
 function buildPopup(r) {
   const isMenuPage = r.menuUrl && r.menuUrl !== r.website;
-  const linkLabel  = isMenuPage ? "Otevřít denní menu →" : "Otevřít web restaurace →";
   return `<div class="pu">
     <div class="pu-name">${esc(r.name)}</div>
     <div class="pu-addr">${esc(r.address) || "adresa neznámá"}</div>
-    <a class="pu-link" href="${esc(r.menuUrl)}" target="_blank" rel="noopener">${linkLabel}</a>
+    <a class="pu-link" href="${esc(r.menuUrl)}" target="_blank" rel="noopener">
+      ${isMenuPage ? "Otevřít denní menu →" : "Otevřít web →"}
+    </a>
   </div>`;
 }
 
-// ── Build sidebar card ────────────────────────────────────────
-function buildCard(r, idx) {
-  const d = distM(centerLat, centerLng, r.lat, r.lng);
+// ── Build card ────────────────────────────────────────────────
+function buildCard(r) {
   const isMenuPage = r.menuUrl && r.menuUrl !== r.website;
-  const linkClass  = isMenuPage ? "menu-link" : "menu-link main-site";
-  const linkLabel  = isMenuPage ? "Denní menu ↗" : "Web ↗";
-
+  const d = distM(centerLat, centerLng, r.lat, r.lng);
   const div = document.createElement("div");
-  div.className   = "rcard";
-  div.dataset.idx = idx;
+  div.className = "rcard";
+  div.dataset.rid = r.id;
   div.innerHTML = `
     <div class="rcard-info">
       <div class="rcard-name">${esc(r.name)}</div>
@@ -526,161 +421,159 @@ function buildCard(r, idx) {
       <div class="rcard-dist">${fmtDist(d)}</div>
     </div>
     <div class="rcard-web">
-      <a class="${linkClass}" href="${esc(r.menuUrl)}" target="_blank" rel="noopener"
-         onclick="event.stopPropagation()">${linkLabel}</a>
+      <a class="menu-link${isMenuPage ? "" : " main-site"}"
+         href="${esc(r.menuUrl)}" target="_blank" rel="noopener"
+         onclick="event.stopPropagation()">${isMenuPage ? "Denní menu ↗" : "Web ↗"}</a>
     </div>`;
-  div.addEventListener("click", () => focusRestaurant(idx));
+  div.addEventListener("click", () => focusRestaurant(r.id));
   return div;
 }
 
+// ── Progressive insert (sorted by distance) ───────────────────
+function insertRestaurant(r) {
+  // 1. Insert into sorted array
+  const d = distM(centerLat, centerLng, r.lat, r.lng);
+  r._d = d;
+  const insertIdx = confirmed.findIndex(x => x._d > d);
+  const pos = insertIdx === -1 ? confirmed.length : insertIdx;
+  confirmed.splice(pos, 0, r);
+
+  // 2. Add marker
+  const marker = L.marker([r.lat, r.lng], { icon: pinBlue })
+    .addTo(map)
+    .bindPopup(buildPopup(r), { maxWidth: 260 });
+  marker.on("popupopen", () => {
+    document.querySelectorAll(".rcard").forEach(c => c.classList.remove("active"));
+    document.querySelector(`.rcard[data-rid="${r.id}"]`)?.classList.add("active");
+  });
+  markerById[r.id] = marker;
+
+  // 3. Insert card at the correct DOM position
+  const list  = document.getElementById("restaurant-list");
+  const cards = list.querySelectorAll(".rcard");
+  const card  = buildCard(r);
+  if (pos >= cards.length) list.appendChild(card);
+  else                     list.insertBefore(card, cards[pos]);
+
+  setHeader(`${confirmed.length} restaurací s denním menu…`);
+}
+
 // ── Focus restaurant ──────────────────────────────────────────
-function focusRestaurant(idx) {
+function focusRestaurant(id) {
   document.querySelectorAll(".rcard").forEach(c => c.classList.remove("active"));
-  const card = document.querySelector(`.rcard[data-idx="${idx}"]`);
-  card?.classList.add("active");
-  card?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-  if (markers[idx]) {
-    markers[idx].setIcon(pinRed);
-    setTimeout(() => markers[idx]?.setIcon(pinBlue), 1600);
-    map.setView(markers[idx].getLatLng(), 17, { animate: true });
-    markers[idx].openPopup();
+  document.querySelector(`.rcard[data-rid="${id}"]`)?.classList.add("active");
+  const marker = markerById[id];
+  if (marker) {
+    marker.setIcon(pinRed);
+    setTimeout(() => markerById[id]?.setIcon(pinBlue), 1600);
+    map.setView(marker.getLatLng(), 17, { animate: true });
+    marker.openPopup();
   }
 }
 
-// ── Render results ────────────────────────────────────────────
-function renderRestaurants(list) {
-  const el = document.getElementById("restaurant-list");
-  el.innerHTML = "";
-  markers.forEach(m => map.removeLayer(m));
-  markers = [];
-
-  if (list.length === 0) {
-    el.innerHTML = `<div class="state-msg">
-      Žádné restaurace s denním menu nebyly nalezeny.<br>Zkuste zvětšit radius nebo jiný odkaz.
-    </div>`;
-    return;
-  }
-
-  list.forEach((r, i) => {
-    const marker = L.marker([r.lat, r.lng], { icon: pinBlue })
-      .addTo(map)
-      .bindPopup(buildPopup(r), { maxWidth: 260 });
-
-    marker.on("popupopen", () => {
-      document.querySelectorAll(".rcard").forEach(c => c.classList.remove("active"));
-      document.querySelector(`.rcard[data-idx="${i}"]`)
-        ?.classList.add("active");
-    });
-
-    markers.push(marker);
-    el.appendChild(buildCard(r, i));
-  });
+// ── Clear view ────────────────────────────────────────────────
+function clearView() {
+  document.getElementById("restaurant-list").innerHTML = "";
+  Object.values(markerById).forEach(m => map.removeLayer(m));
+  confirmed  = [];
+  markerById = {};
 }
 
 // ── Main fetch ────────────────────────────────────────────────
 async function fetchRestaurants() {
-  markers.forEach(m => map.removeLayer(m));
-  markers = [];
-  document.getElementById("restaurant-list").innerHTML = "";
+  clearView();
   hideProgress();
 
-  // 1. Check cache
+  // 1. Cache hit
   const cached = loadCache();
   if (cached) {
-    renderRestaurants(cached);
-    setHeader(`${cached.length} restaurací s denním menu • z mezipaměti`);
+    cached.forEach(r => insertRestaurant(r));
+    setHeader(`${confirmed.length} restaurací s denním menu • z mezipaměti`);
+    setLoading(false);
     return;
   }
 
-  // 2. Fetch from Overpass
+  // 2. Overpass
   setLoading(true);
   setHeader("Hledám restaurace v okolí…");
 
-  let osmRestaurants = [];
-  let overpassErr;
-
+  let osmList = [];
+  let err;
   for (const mirror of OVERPASS_MIRRORS) {
     try {
       const res = await fetchWithTimeout(
         mirror,
         { method: "POST", body: "data=" + encodeURIComponent(buildQuery(centerLat, centerLng, radiusMeters)) },
-        20000
+        35000
       );
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
-      osmRestaurants = parseRestaurants(data.elements);
-      overpassErr = null;
+      const text = await res.text();
+      if (!text.trimStart().startsWith("{")) throw new Error("Overpass returned non-JSON (rate limited?)");
+      osmList = parseRestaurants(JSON.parse(text).elements);
+      err = null;
       break;
-    } catch (e) { overpassErr = e; }
+    } catch (e) { err = e; }
   }
 
-  if (overpassErr) {
+  if (err) {
     setLoading(false);
     setHeader("⚠ Chyba při načítání dat");
     document.getElementById("restaurant-list").innerHTML =
-      `<div class="state-msg">Nepodařilo se načíst data z OpenStreetMap.<br>
-      <small>${esc(overpassErr.message)}</small><br>
-      <button class="retry-btn" onclick="fetchRestaurants()">Zkusit znovu</button></div>`;
+      `<div class="state-msg">${esc(err.message)}<br>
+       <button class="retry-btn" onclick="fetchRestaurants()">Zkusit znovu</button></div>`;
     return;
   }
 
-  // Sort by distance; keep only those with a website URL
-  osmRestaurants.sort((a, b) =>
-    distM(centerLat, centerLng, a.lat, a.lng) - distM(centerLat, centerLng, b.lat, b.lng)
-  );
-  const withSite = osmRestaurants.filter(r => r.website);
+  // Sort nearest-first so checks (and insertions) go from centre outward
+  osmList.sort((a, b) => distM(centerLat, centerLng, a.lat, a.lng) - distM(centerLat, centerLng, b.lat, b.lng));
 
-  // 3. Check each website for daily menu keywords
-  setHeader(`Kontroluji weby restaurací…`);
-  setProgress(0, withSite.length, `0 / ${withSite.length} zkontrolováno`);
+  const withSite = osmList.filter(r => r.website);
+  totalToCheck = withSite.length;
+  totalChecked = 0;
+  setProgress(0, totalToCheck);
+  setHeader("Hledám denní menu…");
 
-  let done = 0;
-  const checked = await concurrentMap(withSite, async r => {
+  // 3. Check websites concurrently; insert each confirmed result immediately
+  await concurrentForEach(withSite, async r => {
     const result = await checkWebsite(r.website);
-    done++;
-    setProgress(done, withSite.length, `${done} / ${withSite.length} zkontrolováno`);
-    return { ...r, ...result };
+    totalChecked++;
+    setProgress(totalChecked, totalToCheck);
+    if (result.hasMenu) {
+      insertRestaurant({ ...r, menuUrl: result.menuUrl || r.website });
+    }
   }, CONCURRENCY);
-
-  // 4. Keep only confirmed restaurants; use menuUrl or fall back to website
-  const confirmed = checked
-    .filter(r => r.hasMenu)
-    .map(r => ({ ...r, menuUrl: r.menuUrl || r.website }));
 
   saveCache(confirmed);
   hideProgress();
   setLoading(false);
-  renderRestaurants(confirmed);
 
-  const note = withSite.length < osmRestaurants.length
-    ? ` • ${osmRestaurants.length - withSite.length} bez webu přeskočeno`
-    : "";
-  setHeader(`${confirmed.length} restaurací s denním menu${note}`);
+  if (confirmed.length === 0) {
+    setHeader("Žádné restaurace s denním menu nenalezeny");
+    document.getElementById("restaurant-list").innerHTML =
+      `<div class="state-msg">Zkuste zvětšit radius nebo jiný odkaz.</div>`;
+  } else {
+    const skipped = osmList.length - withSite.length;
+    setHeader(`${confirmed.length} restaurací s denním menu` +
+              (skipped ? ` • ${skipped} bez webu přeskočeno` : ""));
+  }
 }
 
-// ── Map overlay (center marker + radius circle) ───────────────
+// ── Map overlay ───────────────────────────────────────────────
 function updateMapOverlay() {
   if (centerMarker) map.removeLayer(centerMarker);
   if (radiusCircle)  map.removeLayer(radiusCircle);
-
   centerMarker = L.marker([centerLat, centerLng], { icon: locIcon })
-    .addTo(map)
-    .bindPopup(document.getElementById("center-label").textContent);
-
+    .addTo(map).bindPopup(document.getElementById("center-label").textContent);
   radiusCircle = L.circle([centerLat, centerLng], {
-    radius: radiusMeters,
-    color: "#1558b0",
-    weight: 1.5,
-    fillOpacity: 0.05,
+    radius: radiusMeters, color: "#1558b0", weight: 1.5, fillOpacity: 0.05,
   }).addTo(map);
-
   map.fitBounds(radiusCircle.getBounds(), { padding: [24, 24], maxZoom: 16, animate: true });
 }
 
-// ── Set center and refresh ────────────────────────────────────
 function setCenter(lat, lng, label) {
   centerLat = lat; centerLng = lng;
-  document.getElementById("center-label").textContent = label || `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+  document.getElementById("center-label").textContent =
+    label || `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
   updateMapOverlay();
   clearTimeout(fetchTimer);
   fetchRestaurants();
@@ -702,17 +595,18 @@ async function searchAddress() {
   if (!raw) return;
   const q = /brno/i.test(raw) ? raw : raw + ", Brno";
   try {
-    const res  = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=1`,
-      { headers: { "Accept-Language": "cs" } });
-    const data = await res.json();
-    if (data.length) setCenter(parseFloat(data[0].lat), parseFloat(data[0].lon), data[0].display_name.split(",")[0]);
+    const data = await (await fetch(
+      `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=1`,
+      { headers: { "Accept-Language": "cs" } }
+    )).json();
+    if (data.length) setCenter(parseFloat(data[0].lat), parseFloat(data[0].lon),
+                               data[0].display_name.split(",")[0]);
     else alert(`Adresa nenalezena: "${raw}"`);
   } catch { alert("Chyba při hledání adresy."); }
 }
 document.getElementById("search-btn").addEventListener("click", searchAddress);
-document.getElementById("search-input").addEventListener("keydown", e => {
-  if (e.key === "Enter") searchAddress();
-});
+document.getElementById("search-input").addEventListener("keydown",
+  e => e.key === "Enter" && searchAddress());
 
 // ── Radius change ─────────────────────────────────────────────
 document.getElementById("radius-select").addEventListener("change", e => {
@@ -722,12 +616,11 @@ document.getElementById("radius-select").addEventListener("change", e => {
   fetchTimer = setTimeout(fetchRestaurants, 300);
 });
 
-// ── XSS helper ────────────────────────────────────────────────
+// ── XSS ──────────────────────────────────────────────────────
 function esc(str) {
   if (!str) return "";
-  return String(str)
-    .replace(/&/g, "&amp;").replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;")
+                    .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 }
 
 // ── Boot ──────────────────────────────────────────────────────
