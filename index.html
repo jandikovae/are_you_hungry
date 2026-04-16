@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CloverDX Licensing Guide</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --clover-green: #1D9E75;
+      --clover-dark: #0F6E56;
+      --clover-deep: #085041;
+      --clover-light: #E1F5EE;
+      --clover-pale: #f2fbf8;
+      --text-primary: #18181b;
+      --text-secondary: #52525b;
+      --text-muted: #a1a1aa;
+      --border: #e4e4e7;
+      --surface: #ffffff;
+      --surface-alt: #fafafa;
+      --amber: #BA7517;
+      --amber-bg: #FAEEDA;
+      --blue: #185FA5;
+      --blue-bg: #E6F1FB;
+      --red: #A32D2D;
+      --red-bg: #FCEBEB;
+      --purple: #534AB7;
+      --purple-bg: #EEEDFE;
+    }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #f5f5f0;
+      color: var(--text-primary);
+      line-height: 1.6;
+      font-size: 15px;
+    }
+    #root { min-height: 100vh; }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+
+const { useState } = React;
+
+/* ── small helpers ── */
+const Badge = ({ children, color = "green" }) => {
+  const map = {
+    green: { bg: "#E1F5EE", text: "#0F6E56", border: "#9FE1CB" },
+    amber: { bg: "#FAEEDA", text: "#854F0B", border: "#FAC775" },
+    blue:  { bg: "#E6F1FB", text: "#0C447C", border: "#B5D4F4" },
+    red:   { bg: "#FCEBEB", text: "#791F1F", border: "#F7C1C1" },
+    gray:  { bg: "#F1EFE8", text: "#444441", border: "#D3D1C7" },
+    purple:{ bg: "#EEEDFE", text: "#3C3489", border: "#CECBF6" },
+  };
+  const c = map[color] || map.green;
+  return (
+    <span style={{
+      display:"inline-block", padding:"2px 10px", borderRadius:20,
+      fontSize:11, fontWeight:500, letterSpacing:"0.03em",
+      background:c.bg, color:c.text, border:`1px solid ${c.border}`
+    }}>
+      {children}
+    </span>
+  );
+};
+
+const Callout = ({ type = "info", icon, children }) => {
+  const styles = {
+    info:    { bg:"#E6F1FB", border:"#378ADD", text:"#0C447C" },
+    warning: { bg:"#FAEEDA", border:"#EF9F27", text:"#633806" },
+    danger:  { bg:"#FCEBEB", border:"#E24B4A", text:"#501313" },
+    success: { bg:"#E1F5EE", border:"#1D9E75", text:"#085041" },
+  };
+  const s = styles[type];
+  return (
+    <div style={{
+      background:s.bg, borderLeft:`3px solid ${s.border}`, color:s.text,
+      borderRadius:"0 8px 8px 0", padding:"12px 16px", margin:"16px 0",
+      fontSize:14, lineHeight:1.6
+    }}>
+      {icon && <span style={{marginRight:6}}>{icon}</span>}{children}
+    </div>
+  );
+};
+
+const SectionTag = ({ label }) => (
+  <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
+    <div style={{width:3,height:18,background:"var(--clover-green)",borderRadius:2}} />
+    <span style={{fontSize:11,fontWeight:600,letterSpacing:"0.1em",textTransform:"uppercase",color:"var(--clover-dark)"}}>
+      {label}
+    </span>
+  </div>
+);
+
+/* ── FAQ accordion ── */
+const FAQ = ({ items }) => {
+  const [open, setOpen] = useState(null);
+  return (
+    <div style={{display:"flex",flexDirection:"column",gap:2}}>
+      {items.map((item, i) => (
+        <div key={i} style={{
+          border:"1px solid var(--border)", borderRadius:10,
+          overflow:"hidden", background:"var(--surface)"
+        }}>
+          <button
+            onClick={() => setOpen(open === i ? null : i)}
+            style={{
+              width:"100%", textAlign:"left", padding:"14px 18px",
+              background:"none", border:"none", cursor:"pointer",
+              display:"flex", justifyContent:"space-between", alignItems:"center",
+              fontSize:14, fontWeight:500, color:"var(--text-primary)"
+            }}
+          >
+            <span>{item.q}</span>
+            <span style={{
+              width:20,height:20,borderRadius:"50%",
+              background: open===i ? "var(--clover-green)" : "var(--border)",
+              display:"flex",alignItems:"center",justifyContent:"center",
+              color: open===i ? "#fff" : "var(--text-muted)",
+              fontSize:14, flexShrink:0, transition:"all 0.2s"
+            }}>
+              {open === i ? "−" : "+"}
+            </span>
+          </button>
+          {open === i && (
+            <div style={{
+              padding:"0 18px 16px", fontSize:14, color:"var(--text-secondary)",
+              lineHeight:1.7, borderTop:"1px solid var(--border)"
+            }}>
+              <div style={{paddingTop:12}}>{item.a}</div>
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+};
+
+/* ── card ── */
+const Card = ({ children, style }) => (
+  <div style={{
+    background:"var(--surface)", border:"1px solid var(--border)",
+    borderRadius:12, padding:"24px 28px", ...style
+  }}>
+    {children}
+  </div>
+);
+
+/* ── license flow timeline ── */
+const LicenseFlow = () => {
+  const steps = [
+    { n:1, label:"Deal closed", desc:"Sales confirms the deal is won", color:"#1D9E75" },
+    { n:2, label:"Request raised", desc:"Request sent 1 day before start date", color:"#185FA5" },
+    { n:3, label:"Temporary license", desc:"Issued within 24h SLA — customer can start using the product", color:"#BA7517" },
+    { n:4, label:"Invoice & payment", desc:"Invoice created; payment received", color:"#534AB7" },
+    { n:5, label:"Full-term extension", desc:"Support extends license to full contract term", color:"#1D9E75" },
+    { n:6, label:"Re-download required", desc:"Customer must re-download and re-apply the license file", color:"#E24B4A" },
+  ];
+  return (
+    <div style={{position:"relative",padding:"8px 0"}}>
+      <div style={{
+        position:"absolute",left:19,top:24,bottom:24,
+        width:2,background:"var(--border)",zIndex:0
+      }} />
+      {steps.map((s,i) => (
+        <div key={i} style={{display:"flex",gap:16,marginBottom:i<steps.length-1?20:0,position:"relative",zIndex:1}}>
+          <div style={{
+            width:40,height:40,borderRadius:"50%",flexShrink:0,
+            background:s.color,color:"#fff",
+            display:"flex",alignItems:"center",justifyContent:"center",
+            fontWeight:600,fontSize:14,
+            border:"3px solid var(--surface)"
+          }}>{s.n}</div>
+          <div style={{paddingTop:8}}>
+            <div style={{fontWeight:500,fontSize:14}}>{s.label}</div>
+            <div style={{fontSize:13,color:"var(--text-secondary)",marginTop:2}}>{s.desc}</div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+/* ── comparison table ── */
+const CompareTable = () => {
+  const rows = [
+    ["License expiry", "Set (subscription) or unlimited (perpetual)", "If expired, product stops working — 30-day warning shown"],
+    ["Maintenance expiry", "Annual, even on multi-year deals", "Can't re-download/upgrade; no support access"],
+    ["Perpetual model", "No expiry set; CloverCARE add-on for upgrades", "Being phased out — replaced by subscription on renewal"],
+    ["Subscription model", "Expiry limits product use and version access", "Current standard; maintenance date tracks contract end"],
+    ["License version", "Equals last product version at download time", "Valid for current + all older versions; not for future releases"],
+  ];
+  return (
+    <div style={{overflowX:"auto"}}>
+      <table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}>
+        <thead>
+          <tr style={{background:"var(--clover-light)"}}>
+            {["Concept","How it works","What to watch"].map(h => (
+              <th key={h} style={{
+                padding:"10px 14px",textAlign:"left",fontWeight:600,
+                fontSize:12,letterSpacing:"0.04em",textTransform:"uppercase",
+                color:"var(--clover-deep)",borderBottom:"2px solid var(--clover-green)"
+              }}>{h}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row,i) => (
+            <tr key={i} style={{background: i%2===0 ? "var(--surface)" : "var(--surface-alt)"}}>
+              {row.map((cell,j) => (
+                <td key={j} style={{
+                  padding:"10px 14px",borderBottom:"1px solid var(--border)",
+                  color: j===0 ? "var(--text-primary)" : "var(--text-secondary)",
+                  fontWeight: j===0 ? 500 : 400
+                }}>{cell}</td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
+/* ── main app ── */
+const App = () => {
+  const [activeSection, setActiveSection] = useState("overview");
+  const nav = [
+    { id:"overview",    label:"Overview" },
+    { id:"models",      label:"Sales models" },
+    { id:"lifecycle",   label:"License lifecycle" },
+    { id:"components",  label:"Components" },
+    { id:"faq",         label:"FAQ" },
+  ];
+
+  const faqItems = [
+    {
+      q: "Can Anthropic or CloverDX revoke or remotely modify a license?",
+      a: "No. Once a license file is downloaded, CloverDX has no ability to revoke it, adjust it, or check compliance. All enforcement is local to the customer's system."
+    },
+    {
+      q: "Why does a license need to be re-downloaded after renewal?",
+      a: "Renewals update only the central Lisa database. The license file on the customer's server is unchanged. Customers must download the updated file from the Customer Portal and re-apply it to their Server instance."
+    },
+    {
+      q: "What is the difference between license version and product version?",
+      a: "The license version equals the latest product release at the time the license was generated. It is valid for that version and all earlier ones — but not for future releases. Customers must re-generate their license after each new product release they want to upgrade to."
+    },
+    {
+      q: "What happens when a subscription customer switches between Server cores and Designers mid-term?",
+      a: "The original license file remains technically valid until the end of the term, even though the new configuration is now active in the portal. Using the old file after switching violates the EULA, but CloverDX cannot enforce this technically."
+    },
+    {
+      q: "When should Business Tools be sold as a separate license vs. flags on a Server license?",
+      a: "Version 6.1+ supports separate Business Tools licenses (which is preferred for flexibility). In 6.0 and earlier, Business Tools flags must be added directly to the Server license. Trial licenses always use the flag approach for simplicity."
+    },
+    {
+      q: "What is the 'Cluster Subscription' license and is it still sold?",
+      a: "No — it is deprecated. All Server Subscription licenses are cluster-capable by default (max nodes = max cores). There is no longer a separate Cluster license in the subscription model."
+    },
+    {
+      q: "How far in advance should a license renewal be processed?",
+      a: "At least one day before the current license's end date, due to a time zone buffer built into the system. For production environments, renewals are typically processed well in advance to avoid any service disruption."
+    },
+  ];
+
+  const sections = {
+    overview: (
+      <div>
+        <SectionTag label="Overview" />
+        <h2 style={{fontSize:26,fontWeight:600,marginBottom:8}}>CloverDX Licensing — Quick Reference</h2>
+        <p style={{color:"var(--text-secondary)",marginBottom:24,maxWidth:620}}>
+          A plain-language guide for managers, sales teams, and semi-technical stakeholders on how CloverDX licenses work, expire, and are managed.
+        </p>
+
+        {/* key facts */}
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(200px,1fr))",gap:12,marginBottom:28}}>
+          {[
+            {icon:"🔒",label:"Offline licenses",desc:"Not linked to any online system — can't be revoked remotely",color:"var(--blue-bg)",tc:"var(--blue)"},
+            {icon:"📅",label:"Annual renewals",desc:"Even multi-year deals require yearly license updates",color:"var(--amber-bg)",tc:"var(--amber)"},
+            {icon:"⬇️",label:"Re-download required",desc:"Every update needs a manual re-download from the portal",color:"var(--purple-bg)",tc:"var(--purple)"},
+            {icon:"🧩",label:"Multi-license support",desc:"From v6.1, multiple licenses can be stacked on one Server",color:"#E1F5EE",tc:"var(--clover-dark)"},
+          ].map((c,i) => (
+            <div key={i} style={{
+              background:c.color,borderRadius:10,padding:"16px 18px",
+              border:`1px solid ${c.color}`
+            }}>
+              <div style={{fontSize:20,marginBottom:6}}>{c.icon}</div>
+              <div style={{fontWeight:600,fontSize:14,color:c.tc,marginBottom:4}}>{c.label}</div>
+              <div style={{fontSize:13,color:"var(--text-secondary)"}}>{c.desc}</div>
+            </div>
+          ))}
+        </div>
+
+        <Callout type="warning">
+          <strong>Important:</strong> License files are plain text. Once downloaded, CloverDX cannot modify, invalidate, or monitor them. Compliance is contractual, not technical.
+        </Callout>
+
+        <h3 style={{fontSize:16,fontWeight:600,margin:"24px 0 12px"}}>Expiration vs. maintenance — what's the difference?</h3>
+        <CompareTable />
+      </div>
+    ),
+
+    models: (
+      <div>
+        <SectionTag label="Sales Models" />
+        <h2 style={{fontSize:26,fontWeight:600,marginBottom:8}}>Perpetual vs. Subscription</h2>
+        <p style={{color:"var(--text-secondary)",marginBottom:24,maxWidth:620}}>
+          CloverDX has operated two licensing models over its history. Understanding both is essential when talking to long-standing customers.
+        </p>
+
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))",gap:16,marginBottom:28}}>
+          {/* perpetual */}
+          <Card>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
+              <h3 style={{fontSize:16,fontWeight:600}}>Perpetual / Legacy</h3>
+              <Badge color="gray">Being phased out</Badge>
+            </div>
+            <ul style={{color:"var(--text-secondary)",fontSize:14,lineHeight:1.8,paddingLeft:18}}>
+              <li>No license expiry — customers keep it indefinitely</li>
+              <li>Requires <strong>CloverCARE</strong> (Maintenance) to upgrade and get support</li>
+              <li>With lapsed maintenance, still usable but <em>not upgradeable</em></li>
+              <li>Older product versions increasingly incompatible with third-party systems</li>
+            </ul>
+            <Callout type="info">
+              When a perpetual license is about to expire, the intent is to replace it with a standard Server/Designer Subscription.
+            </Callout>
+          </Card>
+
+          {/* subscription */}
+          <Card style={{borderColor:"var(--clover-green)",borderWidth:2}}>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
+              <h3 style={{fontSize:16,fontWeight:600}}>Subscription</h3>
+              <Badge color="green">Current standard</Badge>
+            </div>
+            <ul style={{color:"var(--text-secondary)",fontSize:14,lineHeight:1.8,paddingLeft:18}}>
+              <li>License expiry limits both product use and version access</li>
+              <li>Maintenance date used to <strong>track multi-year contract end dates</strong></li>
+              <li>Customers can switch between Designer seats and Server cores</li>
+              <li>Switching mid-term carries a risk of duplicate-use of the old license file (EULA violation)</li>
+            </ul>
+            <Callout type="warning">
+              When a customer switches resources mid-term, the original license file stays technically valid. This violates the EULA but cannot be enforced technically.
+            </Callout>
+          </Card>
+        </div>
+
+        {/* mixed licenses note */}
+        <Card style={{background:"#faf9f7",borderStyle:"dashed"}}>
+          <h3 style={{fontSize:15,fontWeight:600,marginBottom:8}}>Mixed / transitional licenses</h3>
+          <p style={{fontSize:14,color:"var(--text-secondary)",lineHeight:1.7}}>
+            Due to the uneven transition between models, some licenses exist that look perpetual (named after the old "Lisa" product) but carry a set expiry date and lack subscription flexibility. These cause confusion across systems and departments.
+            <br /><br />
+            <strong>Resolution plan:</strong> These will be replaced with Server/Designer Subscription licenses when they come up for renewal.
+          </p>
+        </Card>
+      </div>
+    ),
+
+    lifecycle: (
+      <div>
+        <SectionTag label="License Lifecycle" />
+        <h2 style={{fontSize:26,fontWeight:600,marginBottom:8}}>From deal to renewal</h2>
+        <p style={{color:"var(--text-secondary)",marginBottom:24,maxWidth:620}}>
+          How a license moves through its lifecycle — from deal close to full-term operation.
+        </p>
+
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:24,marginBottom:28}}>
+          <Card>
+            <h3 style={{fontSize:15,fontWeight:600,marginBottom:16}}>Release process</h3>
+            <LicenseFlow />
+          </Card>
+
+          <div style={{display:"flex",flexDirection:"column",gap:14}}>
+            <Card>
+              <h3 style={{fontSize:15,fontWeight:600,marginBottom:8}}>Renewal rules</h3>
+              <ul style={{fontSize:13,color:"var(--text-secondary)",lineHeight:1.8,paddingLeft:16}}>
+                <li>Renewal = changing dates only — everything else stays the same</li>
+                <li>New and old license share the same <strong>license number</strong> → no duplication</li>
+                <li>Even multi-year contracts require a renewal <em>every year</em></li>
+                <li>Recommend updating at least <strong>1 day before</strong> the expiry date</li>
+              </ul>
+            </Card>
+            <Callout type="warning">
+              The CloverDX server is in the CET time zone. License end dates apply at midnight CET — a one-day buffer is strongly recommended to avoid unexpected downtime due to time zone differences.
+            </Callout>
+            <Card>
+              <h3 style={{fontSize:15,fontWeight:600,marginBottom:8}}>Temporary vs. full-term licenses</h3>
+              <p style={{fontSize:13,color:"var(--text-secondary)",lineHeight:1.7}}>
+                New licenses are released with a short (~1 month) temporary expiry until payment is confirmed. After payment, support extends the license to the full contract term. The customer must <strong>re-download</strong> the license after each update — the old file is not automatically updated.
+              </p>
+            </Card>
+          </div>
+        </div>
+
+        {/* version logic */}
+        <Card style={{marginBottom:20}}>
+          <h3 style={{fontSize:15,fontWeight:600,marginBottom:10}}>License version logic</h3>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16,fontSize:13}}>
+            <div>
+              <div style={{fontWeight:500,marginBottom:6,color:"var(--clover-dark)"}}>Example scenario</div>
+              <div style={{color:"var(--text-secondary)",lineHeight:1.7}}>
+                Customer downloads their license the day after CloverDX 6.2 is released.<br/><br/>
+                → Their license is stamped as <strong>version 6.2</strong><br/>
+                → Works for 6.2, 6.1, 6.0, 5.x, 4.x ...<br/>
+                → Does NOT work for 6.3+ until they re-download after 6.3 is out
+              </div>
+            </div>
+            <div>
+              <div style={{fontWeight:500,marginBottom:6,color:"var(--clover-dark)"}}>Why this matters</div>
+              <div style={{color:"var(--text-secondary)",lineHeight:1.7}}>
+                Perpetual customers with expired maintenance are stuck on whichever product version was current when their maintenance lapsed — they cannot re-generate a newer license, so they effectively cannot upgrade.
+              </div>
+            </div>
+          </div>
+        </Card>
+
+        {/* start date note */}
+        <Callout type="success">
+          <strong>v6.1+:</strong> The product now enforces the license <em>Start Date</em>. In older versions, licenses were valid immediately regardless of start date. License requests are now triggered one day before the intended start to ensure smooth activation.
+        </Callout>
+      </div>
+    ),
+
+    components: (
+      <div>
+        <SectionTag label="Components & Configuration" />
+        <h2 style={{fontSize:26,fontWeight:600,marginBottom:8}}>What's inside a license</h2>
+        <p style={{color:"var(--text-secondary)",marginBottom:24,maxWidth:620}}>
+          CloverDX licenses are composed of several configurable components. This section explains what each does.
+        </p>
+
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))",gap:14,marginBottom:28}}>
+          {[
+            {
+              title:"Cores & Nodes",
+              badge:{label:"Server only",color:"blue"},
+              body:"Server Subscription licenses default to 0 cores. Support sets the max cores based on the order. Nodes are automatically set to match core count — so every Server license is cluster-ready without extra configuration.",
+            },
+            {
+              title:"Flags & Plugins",
+              badge:{label:"Add-on components",color:"purple"},
+              body:"Flags control access to specific product features (e.g. Data Quality plugin, EDI components). They're hardcoded in the product — only development can add or remove them. Also used to license Business Tools prior to v6.1.",
+            },
+            {
+              title:"Business Tools",
+              badge:{label:"Requires v6.1+",color:"amber"},
+              body:"From v6.1, Business Tools can be issued as a standalone empty-Server license (0 cores). Before 6.1, BT flags had to be added to the main Server license. Trial users always get flags on the Server license for simplicity.",
+            },
+            {
+              title:"Non-production licenses",
+              badge:{label:"Technical copy",color:"gray"},
+              body:"Non-production Server licenses are technically identical to production ones — CloverDX cannot enforce non-prod usage. Designer licenses are inherently non-prod by nature. A Non-Production Business Tools license is now available for dev/testing environments.",
+            },
+          ].map((c,i) => (
+            <Card key={i}>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
+                <h3 style={{fontSize:15,fontWeight:600}}>{c.title}</h3>
+                <Badge color={c.badge.color}>{c.badge.label}</Badge>
+              </div>
+              <p style={{fontSize:13,color:"var(--text-secondary)",lineHeight:1.7}}>{c.body}</p>
+            </Card>
+          ))}
+        </div>
+
+        {/* multiple licenses */}
+        <Card style={{marginBottom:16}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
+            <h3 style={{fontSize:15,fontWeight:600}}>Multiple licenses on one Server</h3>
+            <Badge color="green">v6.1+ feature</Badge>
+          </div>
+          <p style={{fontSize:13,color:"var(--text-secondary)",lineHeight:1.7,marginBottom:12}}>
+            From version 6.1, a CloverDX Server can hold multiple license files and aggregate the total core count across them. This enables upsell without replacing the existing license.
+          </p>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,fontSize:13}}>
+            <Callout type="success">
+              Two licenses with <strong>different license numbers</strong> → cores are added together.
+            </Callout>
+            <Callout type="danger">
+              Same license number applied twice → no multiplication (prevents renewal double-count).
+            </Callout>
+          </div>
+        </Card>
+
+        {/* deprecated */}
+        <Card style={{background:"#faf9f7",borderStyle:"dashed"}}>
+          <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
+            <h3 style={{fontSize:15,fontWeight:600}}>Deprecated: Cluster Subscription license</h3>
+            <Badge color="red">Deprecated</Badge>
+          </div>
+          <p style={{fontSize:13,color:"var(--text-secondary)",lineHeight:1.7}}>
+            The "Cluster Subscription" license type has been retired. All Server Subscription licenses are cluster-capable by default (max nodes = max cores). There is no reason to differentiate, and the separate cluster license type should not be used or sold.
+          </p>
+        </Card>
+      </div>
+    ),
+
+    faq: (
+      <div>
+        <SectionTag label="FAQ" />
+        <h2 style={{fontSize:26,fontWeight:600,marginBottom:8}}>Common questions</h2>
+        <p style={{color:"var(--text-secondary)",marginBottom:24,maxWidth:620}}>
+          Answers to the questions that come up most often in sales conversations and support requests.
+        </p>
+        <FAQ items={faqItems} />
+        <div style={{marginTop:24}}>
+          <Callout type="info">
+            For detailed Business Tools licensing, refer to the Knowledgebase article: <strong>CloverDX Business Tools license guide</strong> (support1.cloverdx.com).
+          </Callout>
+        </div>
+      </div>
+    ),
+  };
+
+  return (
+    <div style={{minHeight:"100vh",display:"flex",flexDirection:"column"}}>
+      {/* ── header ── */}
+      <header style={{
+        background:"var(--clover-deep)",color:"#fff",
+        padding:"0 32px", position:"sticky",top:0,zIndex:100,
+        borderBottom:"1px solid rgba(255,255,255,0.08)"
+      }}>
+        <div style={{maxWidth:1100,margin:"0 auto",display:"flex",alignItems:"center",justifyContent:"space-between",height:56}}>
+          <div style={{display:"flex",alignItems:"center",gap:12}}>
+            <div style={{
+              width:28,height:28,borderRadius:6,
+              background:"var(--clover-green)",
+              display:"flex",alignItems:"center",justifyContent:"center",
+              fontSize:14,fontWeight:700,color:"#fff",fontFamily:"DM Mono"
+            }}>C</div>
+            <span style={{fontWeight:600,fontSize:15,letterSpacing:"0.01em"}}>CloverDX</span>
+            <span style={{
+              fontSize:11,background:"rgba(255,255,255,0.12)",
+              padding:"2px 8px",borderRadius:20,letterSpacing:"0.05em"
+            }}>LICENSING GUIDE</span>
+          </div>
+          <div style={{fontSize:12,color:"rgba(255,255,255,0.5)"}}>
+            Support team · Updated July 21, 2025
+          </div>
+        </div>
+      </header>
+
+      <div style={{flex:1,display:"flex",maxWidth:1100,margin:"0 auto",width:"100%",padding:"0 16px"}}>
+        {/* ── sidebar ── */}
+        <aside style={{
+          width:200,flexShrink:0,padding:"32px 0 32px",
+          position:"sticky",top:56,alignSelf:"flex-start",
+          height:"calc(100vh - 56px)",overflowY:"auto"
+        }}>
+          <nav style={{display:"flex",flexDirection:"column",gap:2}}>
+            {nav.map(item => (
+              <button
+                key={item.id}
+                onClick={() => setActiveSection(item.id)}
+                style={{
+                  textAlign:"left",padding:"9px 14px",borderRadius:8,border:"none",
+                  cursor:"pointer",fontSize:14,fontWeight: activeSection===item.id ? 600 : 400,
+                  background: activeSection===item.id ? "var(--clover-light)" : "transparent",
+                  color: activeSection===item.id ? "var(--clover-dark)" : "var(--text-secondary)",
+                  borderLeft: activeSection===item.id ? "3px solid var(--clover-green)" : "3px solid transparent",
+                  transition:"all 0.15s"
+                }}
+              >
+                {item.label}
+              </button>
+            ))}
+          </nav>
+          {/* quick tip */}
+          <div style={{
+            marginTop:32,padding:"12px 14px",background:"var(--clover-pale)",
+            borderRadius:8,border:"1px solid var(--clover-light)"
+          }}>
+            <div style={{fontSize:11,fontWeight:600,color:"var(--clover-dark)",textTransform:"uppercase",letterSpacing:"0.08em",marginBottom:4}}>
+              Quick tip
+            </div>
+            <p style={{fontSize:12,color:"var(--text-secondary)",lineHeight:1.6}}>
+              Renew licenses at least 1 day before expiry to avoid time-zone edge cases.
+            </p>
+          </div>
+        </aside>
+
+        {/* ── main content ── */}
+        <main style={{flex:1,padding:"36px 0 36px 40px",minWidth:0}}>
+          {sections[activeSection]}
+        </main>
+      </div>
+
+      {/* ── footer ── */}
+      <footer style={{
+        background:"var(--surface)",borderTop:"1px solid var(--border)",
+        padding:"18px 32px",textAlign:"center",
+        fontSize:12,color:"var(--text-muted)"
+      }}>
+        CloverDX Licensing Guide · Internal use only · www.licenses.cloverdx.com
+      </footer>
+    </div>
+  );
+};
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+</body>
+</html>
